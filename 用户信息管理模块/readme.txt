@@ -1,0 +1,4 @@
+﻿使用bootstrap+vue.js实现简单的信息管理表
+css中放置所需的css文件
+js中放置所需的js文件
+index为主显示页面
