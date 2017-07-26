@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>获取列表</title>
+
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.css" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	<script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<style>
+		.gray{
+			background: #ccc;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" id="box">
+		<div class="page-header">
+			<h1>
+				获取列表&nbsp;
+				<small>(百度)</small>
+			</h1>
+		</div>
+		<div class="input-group">
+			<input type="text" class="form-control" placeholder="请输入链接" aria-describedby="basic-addon1" v-model="t1" @keyup="get($event)" @keydown.down="changeDown()" @keydown.up.prevent="changeUp()">
+			 <span class="input-group-btn">
+        <button class="btn btn-default" type="button" @click="search()">搜索</button>
+      </span>
+		</div>
+		<br>
+		<ul class="list-group">
+			<li class="list-group-item" v-for="(item,index) in myData" :class="{gray:index==now}">{{item}}</li>
+
+		</ul>
+		<p class="text-left text-muted" v-show="myData.length==0">&nbsp;&nbsp;暂无数据</p>
+
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="js/jQuery.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/vue-resource.js"></script>
+	<script>
+    new Vue({
+    	el: '#box',
+    	data: {
+    		myData: [],
+    		t1: '',
+    		now: -1
+    	},
+    	methods: {
+    		get: function(ev){
+    			if (ev.keyCode==38 ||ev.keyCode==40) return;
+    			if (ev.keyCode == 13) {
+    				window.open('https://www.baidu.com/s?wd='+this.t1);
+    				this.t1='';
+    			}
+    			this.$http.jsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',{wd:this.t1},{jsonp:'cb'}).then(function(res){
+    				this.myData=res.data.s;
+    			},function(){
+    				console.log(res.status);
+    			})
+    		},
+    		changeDown: function(){
+    			this.now++;
+    			if(this.now==this.myData.length){
+    				this.now=-1;
+    			}
+    			this.t1=this.myData[this.now];
+    		},
+    		changeUp: function(){
+    			this.now--;
+    			if (this.now==-2) {
+    				this.now=this.myData.length-1;
+    			}
+    			this.t1=this.myData[this.now];
+    		},
+    		search: function(){
+    			window.open('https://www.baidu.com/s?wd='+this.t1);
+    			this.t1='';
+    		}
+    	}
+ 	})
+     </script>
+</body>
+</html>
