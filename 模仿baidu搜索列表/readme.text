@@ -1,0 +1,4 @@
+模仿百度搜索,使用vue.js中的jsonp进行接口设置
+js目录下放置所用的js文件
+css目录下放置所用的css文件
+get_list.html为主文件
