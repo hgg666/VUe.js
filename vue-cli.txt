@@ -1,0 +1,16 @@
+vue脚手架的使用
+vue-cli本身集成很多项目模板:
+	simple		个人觉得一点用都没有
+	webpack		可以使用(大型项目)
+			Eslint检查代码规范,
+			单元测试
+	webpack-simple	没用代码检查和单元测试
+	browserify
+	browserify-simple
+1.npm init -y 生成package.json工程文件
+2.cnpm install vue-cli -g 安装vue命令环境:
+	验证安装ok?vue-version
+3.vue init<模板名> 本地文件夹名称
+4.进入到生成目录里面
+  cd 本地文件夹名称 然后 cnpm install
+5.npm run dev 		
