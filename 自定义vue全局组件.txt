@@ -1,0 +1,20 @@
+自定义vue全局组件
+	使用:
+		<Loading></Loading>
+-----------------------------------------
+npm install cnpm -g	安装cnpm
+-----------------------------------------
+loading
+	index.js	//导出组件,并且install
+	Loading.vue	//Loading组件
+
+主要文件index.js代码
+import LoadingComponent from './Loading.vue'
+
+const Loading={
+	install:function(Vue){
+		Vue.component('Loading',LoadingComponent)
+	}
+};
+
+export default Loading

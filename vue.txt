@@ -1,0 +1,273 @@
+﻿vue MVVM框架
+
+vue的基本模型
+new vue({
+el:'选择器',
+data:{},    //数据 
+methods:{}, //方法
+computed:{} //计算属性,记得return
+conponents:{} //局部组件
+})
+
+vue实例属性和方法
+vm.$el	//就是元素
+vm.$data  //就是data
+vm.$mount('#boox'); //手动挂载
+vm.$options	//获取自定义属性
+vm.$destory	//销毁对象
+vm.$log()	//查看现在数据的状态
+
+v-model		一般表单元素(input)	
+		双向绑定
+
+v-for		循环
+		v-for="value in arr"
+		v-for="(k,v) in arr"
+		{{k}} {{v}}
+如果有重复数据,添加track-by='索引'
+
+v-on:事件(简写@)	事件处理程序,例如:
+		v-on:click="show
+
+($event)"
+		v-on:mouseover
+
+v-show="true/false"	显示/隐藏
+
+:自定义属性="data中的数据" 给自定义属			  性赋值
+
+this.data.splice(index,1)删除当前的第index个元素,例如:
+methods: {
+  removeTodo: function (todo) {
+    var index = this.todos.indexOf(todo)
+    this.todos.splice(index, 1)
+  }
+}
+
+阻止冒泡		ev.cancaelBubble=true
+		或者@click.stop
+
+阻止默认行为	ev.preventDefault()
+	    或者@contextmenu.prevent
+
+键盘事件:
+	回车	@keyup.13="show()"
+	    或者@keyup.enter="show()"
+	上、下、左、右@keyup/@keydown.up/down/left/right	
+属性(v-bind:,缩写:)  v-bind:src="url"		
+:class="[red]"	red是数据
+:class="[red,b,c,d]"
+:class="{red:true,blue:false}"
+//red和blue是类名
+
+:style="[c,d]"
+data中为
+data: {
+	c:{backgroundColor:'red'},
+	d:{color:'blue'}
+}(注意复合样式采用驼峰形式)
+也可以:style="json"
+
+模板:
+{{msg}}		数据更新模板变化
+{{*msg}}	数据只绑定一次
+{{{msg}}}	html转译数据
+
+常用过滤器
+{{msg|filterA}}
+{{msg|filterA|filterB}}
+{{msg|filterA 参数}}
+debounce //配合事件,延迟执行
+limitBy 参数1(取几个) 参数2(从哪开始) //限制几个,一般					用在数组orderBy 谁 1/-1 //排序				     
+filterBy //过滤数据
+例如:
+{{'welcome'|uppercase}}	转大写
+{{'WELCOME'|lowercase}}	转小写
+{{'welcome'|capitalize}} 首字母大写
+{{12|currency 'rmb'}} 转成rmb12.00
+filterBy 'a' 取得有a的元素 
+
+自定义过滤器
+Vue.filter('name',function(){
+})
+交互:
+get:
+this.$http.get('get.php',{'a':1,'b':2}).then(function(res){
+					alert(res.data);
+				},function(res){
+					alert(res.status);
+				});	
+
+post:
+this.$http.post('post.php',{'a':1,'b':2},{emulateJSON: true}).then(function(res){
+					alert(res.data);
+				},function(res){
+					alert(res.status);
+				});	
+			}
+jsonp 
+this.$http.jsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',{wd: 'a'},{jsonp:'cb'		//callback名字,默认名字就是"callback"
+				}).then(function(res){
+					alert(res.data.s);
+				},function(res){
+					alert(res.status);
+				});	
+还有一种方法
+this.$http({
+	url:地址
+	data:给后台提交的数据
+	method:方法
+	jsonp:'cb'//cbname
+})
+
+v-cloak	防止闪烁(用在比较大的段落)
+
+自定义指令:
+	Vue.directive(指令名称,function(参数){
+
+	});
+	指令如果为v-red,则指令名称为red
+	必须以'v-'开头
+
+自定义键盘信息
+Vue.directive('on').keyCodes.ctrl=17; 
+
+监听数据变化
+vm.$watch(name,fnCb);//浅度监视
+vm.$watch(name,fnCb,{deep:true});//深度监视
+
+bower ->(前端)包管理器
+	npm install bower -g
+		验证:bower --version
+bower install <包名>
+bower uninstall <包名>
+bower info <包名>
+
+transition 动画
+使用如下:
+<div id="demo">
+  <button v-on:click="show = !show">
+    Toggle
+  </button>
+  <transition name="fade">
+    <p v-if="show">hello</p>
+  </transition>
+</div>
+new Vue({
+  el: '#demo',
+  data: {
+    show: true
+  }
+})
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
+}
+
+定义一个组件
+1.全局组件
+var Aaa=Vue.extend({
+	template:"<h3>我是标题</h3>"
+})
+//定义之后就得注册才能用
+Vue.component('aaa',Aaa);
+//组件里面放数据:
+	data必须是函数形式,函数必须返回一个对象(json)
+2.局部组件
+放在某个组件内部
+var vm=new Vue({
+	el:'#box',
+	data:{
+	},
+	components:{
+	  'my-aaa':Aaa
+	}
+})
+另一种编写方式
+Vue.component('my-aaa',{
+	template:'<strong>好</strong>'
+});
+
+动态组件
+<component :is="组件名称"></component>
+
+vue默认情况下,子组件也没法访问父组件数据
+
+组件数据传递
+1.子组件就想获取父组件data
+	在调用子组件:
+		<bbb :m="数据"></bbb>
+	子组件之内
+		props:['m','myMsg']
+		或者props:{
+			'm':String,
+			'myMsg':Number
+		}
+2.父级获取子级数据
+     子组件把自己的数据发送到父级
+	vm.$emit(事件名,数据)
+	v-on: 事件名
+
+<template>在vue2.0之后必须有根元素，包裹住所有的代码
+
+vue2.0对router进行了替换
+所以router的创建如下
+1.html创建如下
+<ul>
+//tag是指定渲染成什么标签
+<router-link tag="li" to="/home"><a>主页</a></router-link>
+<router-link tag="li" to="/news"><a>新闻页</a></router-link>
+</ul>	
+<div>
+<router-view></router-view>
+</div>
+2.js如下
+(1)创建模板
+var home=Vue.extend({		
+	template:'<h3>我是主页</h3>'
+});
+var news=Vue.extend({
+	template:'<h3>我是新闻页</h3>'
+});
+(2)创建路由器
+var router = new VueRouter({
+	routes: [
+	    { path: '/', redirect: '/home'},//设置跳					      转页面
+	    { path: '/home', component: home },
+	    { path: '/news', component: news }
+	  ]
+})
+(3) 实例化Vue对象
+new Vue({
+	el: '#app',
+	router: router,
+});
+路由器多级嵌套主要是在创建路由器的时候添加一个children属性:
+{ path: '/news', component: news ,children:[
+	   {
+	   	path: '/news/newlist', component:{	   			template:'<strong>2</strong>'
+	   		}}
+]}
+
+路由获取当前页id,如下:
+html使用如下:
+<template id="detail">
+	<div>
+		{{$route.params}}
+		<br>
+		{{$route.query}} <!-- 当前数据 -->
+		<br>
+		{{$route.path}} <!-- 当前路径 -->
+	</div>
+</template>
+js使用如下
+{ path: '/news', component: news ,children:[	   		{
+	   path: '/news/detail/:id', component:detail
+	}
+]}
+
+bower 前端包管理器 jquery#1.11.1
+      自动解决依赖
+npm   node包管理器 jquery@1.11.1

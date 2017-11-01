@@ -1,0 +1,12 @@
+做项目流程
+	1.规划组件结构
+		Nav.vue
+		Header.vue
+		Home.vue
+
+	2.编写对应的路由
+		vue-router
+
+	3.具体些每个组件的功能
+
+建议:一般公共文件jquery,jquery插件一般都在index.html文件里面引入

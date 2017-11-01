@@ -1,0 +1,171 @@
+变化:
+1.在每个组件模板,不在支持片段代码
+组件中的模板:
+	之前:<template>
+		<h3>我是组件</><strong>加粗</strong>
+	     </template>
+	现在:必须有根元素,包裹所有的代码
+	     <template>
+		<div>
+		<h3>我是组件</><strong>加粗</strong>
+		</div>
+	     </template>
+
+2.关于组件的定义
+Vue.extend	这种方式,在2.0里面有,但是有一些改动,这种写法即使能用,也最好不要用,但下列在2.0中仍然可用
+	Vue.conponent(组件名称{
+		data:{},
+		method:{},
+		template:
+	})
+2.0推出一个组件,简洁定义方式:
+var Home={
+	template:''
+}
+
+3.生命周期  
+	之前:
+		init
+		created
+		beforeCompile
+		compiled
+		ready
+		beforeDestroy
+		destroy
+	现在:
+		beforeCreate 组件实例刚刚被创建,属性都没有
+		created	实例已经创建完成,属性已经绑定
+		beforeMount 模板编译之前
+		mounted 模板编译完成	
+		beforeUpdate 组件 更新之前
+		updated 组件更新完毕
+		beforeDestroy 组件销毁之前
+		destroyed 组件销毁后
+
+3.循环
+	2.0里面默认就可以添加重复数据
+	之前:track-by="id"
+	现在:
+	<li v-for="(val,index) in list" :key="index">
+		{{val}} {{index}}
+	</li>//:key只是为了提升性能
+
+5.自定义键盘指令
+	之前:Vue.directive('on').keyCodes.ctrl=17;		
+现在:Vue.config.keyCodes.ctrl=17
+
+6.过滤器
+	之前: 系统自带很多过滤
+		{{msg|currency}}	
+		{{msg|json}}
+	现在: 内置过滤器全部删除了,自己通过js实现
+	推荐lodash 工具库 _debounce(fn,200)
+	自定义过滤器传参
+		之前:{{msg|toDou '12' '5'}}
+		现在:{{msg|toDou('12','5')}}
+
+7.组件通信
+	vm.$emit()//发送
+	vm.$on()//接收
+	子组件想到得到父组件数据
+		通过props
+	之前,子组件可以更改父组件信息,可以同步 sync
+	现在,不允许直接给父级的数据,做赋值的操作
+	如果想更改,使用以下方法:
+		a)父组件每次传一个对象给子组件,对象之		  间的引用(推荐使用)
+		b)只是不报错,用mounted中转
+可以单一事件管理组件通信: vuex
+	var Event=new Vue();
+	Event.$emit(事件名称,数据)
+	Event.$on(事件名称,function(data){
+		//data
+	}.bind(this));
+
+8.vue动画
+transition之前属性:
+	<p transition="fade"></p>
+.fade-transition{}
+.fade-enter{}
+.fade-leave{}
+2.0之后变成transition组件:
+	<transition name="fade">
+		运动东西(元素,属性,路由......)
+	</transition>
+class定义
+.fade-enter		//初始状态
+.fade-enter-active{}	//变化成什么样(当元素出来,显示)
+.fade-leave
+.fade-leave-active{}	//变化成什么样(当元素离开,消失)
+嵌套多个div用transition-group组件
+<transition-group>
+<p :key=""></p>
+<p :key=""></p>
+</transition-group>
+
+9.vue-router2.0的使用
+(1)布局
+<div>
+	<router-link to="/home">主页</router-link>
+	<router-link to="/news">新闻</router-link>
+</div>
+<div>
+	<router-view></router-view>
+</div>
+(2)路由具体写法
+//组件
+        var Home={
+            template:'<h3>我是主页</h3>'
+        };
+        var News={
+            template:'<h3>我是新闻</h3>'
+        };
+
+        //配置路由
+        const routes=[
+            {path:'/home', component:Home},
+            {path:'/news', component:News},
+            {path:'*', redirect:'/home'}
+        ];
+
+        //生成路由实例
+        const router=new VueRouter({
+            routes
+        });
+
+
+        //最后挂到vue上
+        new Vue({
+            router,
+            el:'#box'
+        });
+(3)重定向,之前的redirect废弃了
+(4)路由嵌套
+ const routes=[
+            {path:'/home', component:Home},
+            {path:'/user', component:User,children:[
+            	  {path:'/user/username', component:UserDetail}
+            ]},
+            {path:'*', redirect:'/home'}
+(5)路由监听:
+export default{			//当路由发生变化时
+      watch:{
+          $router(){
+            alert(1);
+          }
+      }
+}
+(6)路由实例方法:
+	router.push({path:'home'});//直接添加一个路由,表现切换路由,本质往历史记录里面添加一个
+	router.replace({path:'user'});//替换路由,不会往历史记录添加
+
+10.vue-loader
+	1.0->	new Vue({
+			el:'#app',
+			conponents:{App}
+		})
+	2.0->	new Vue({
+  			el: '#app',
+ 			render: h => h(App)
+		})
+vue2.0
+	vue-loader和vue-router配合

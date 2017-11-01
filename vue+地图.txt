@@ -1,0 +1,42 @@
+1.<script src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥" type="text/javascript"></script> 需要引入到index.html中
+
+2.map.vue
+	template 
+		<div id="div1" :style="style"></div>
+	script
+		export default{
+			data(){
+				style:{
+					width:'100%',
+					height:this.height+'ox'
+				}	
+			}
+			props:{
+				height:{
+					type:Number,
+					default:300
+				},
+				longtitude:{},
+				latitude:{}
+			},
+			mounted:{
+				var map = new BMap.Map("div1");    
+				var point = new BMap.Point(this.longtitude, this.latiude);    
+				map.centerAndZoom(point, 15);    
+				var marker = new BMap.Marker(point);//创建标注
+				map.addOverlay(marker);
+			}
+		}
+--------------------------------------------------------------------------------
+App.vue
+template:
+	<MapView :height="300" :latitude=""></MapView>
+
+	import MapView
+
+	export default{
+		components:{
+			MapView
+		}
+		mounted:
+	}  
